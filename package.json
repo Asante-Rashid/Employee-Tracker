@@ -4,7 +4,8 @@
   "description": "--- command-line application for employee management",
   "main": "index.js",
   "dependencies": {
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {},
   "scripts": {
