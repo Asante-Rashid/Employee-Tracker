@@ -18,7 +18,7 @@ const start = () => {
       .prompt({
         name: 'start',
         type: 'list',
-        message: 'What would youi like to do?',
+        message: 'What would you like to do?',
         choices: ['Add Department', 'Add Role', 'Add Employee', 'View Departments', 'View Roles', 'View Employees', 'Update Employee Role', 'Exit'],
       })
       .then((answer) => {
@@ -64,6 +64,52 @@ const start = () => {
           }
         );
       });
+  };
+
+  const addRole = () => {
+    connection.query('SELECT * FROM department', (err, results) => {
+      if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: 'title',
+          type: 'input',
+          message: 'What is the name of this new role?',
+        },
+        {
+          name: 'salary',
+          type: 'input',
+          message: 'What is the hourly salary?',
+        },
+        {
+          name: 'department',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({ name }) => {
+              choiceArray.push(name);
+            });
+            return choiceArray;
+          },
+          message: 'What department is this role in?',
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          'INSERT INTO role SET ?',
+          {
+            title: answer.title,
+            salary: answer.salary,
+            department_id: answer.department,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log('New role was created successfully!');
+            start();
+          }
+        );
+      });
+    });
   };
 
   const viewDepartments = () => {
