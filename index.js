@@ -1,17 +1,13 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 
-// create the connection information for the sql database
 const connection = mysql.createConnection({
   host: 'localhost',
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: 'root',
 
-  // Your password
   password: 'root',
   database: 'company',
 });
@@ -25,7 +21,6 @@ const start = () => {
         choices: ['Add Department', 'Add Role', 'Add Employee', 'View Departments', 'View Roles', 'View Employees', 'Update Employee Role', 'Exit'],
       })
       .then((answer) => {
-        // based on their answer, either call the bid or the post functions
         if (answer.start === 'Add Department') {
           addDepartment();
         } else if (answer.start === 'Add Role') {
@@ -47,7 +42,6 @@ const start = () => {
   };
 
   const addDepartment = () => {
-    // prompt for info about the item being put up for auction
     inquirer
       .prompt([
         {
@@ -57,22 +51,30 @@ const start = () => {
         },
       ])
       .then((answer) => {
-        // when finished prompting, insert a new item into the db with that info
         connection.query(
           'INSERT INTO department SET ?',
-          // QUESTION: What does the || 0 do?
           {
             name: answer.department,
           },
           (err) => {
             if (err) throw err;
             console.log('New department was created successfully!');
-            // re-prompt the user for if they want to bid or post
             start();
           }
         );
       });
   };
+
+  const viewDepartments = () => {
+    
+        connection.query('SELECT * FROM department',(err,res) => {
+            if (err) throw err;
+            console.log(res);
+            start();
+          }
+        );
+      };
+  
 
 connection.connect((err) => {
     if (err) throw err;
